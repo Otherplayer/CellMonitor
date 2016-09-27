@@ -10,6 +10,7 @@
 
 @interface ViewController ()
 @property (weak, nonatomic) IBOutlet UIButton *btnCellSignal;
+@property (strong, nonatomic) NSTimer *timer;
 
 @end
 
@@ -21,7 +22,6 @@
     
     
     [self refreshSignal:nil];
-    
     
 }
 
@@ -37,6 +37,13 @@
     [self.btnCellSignal setTitle:title forState:UIControlStateNormal];
     [self.btnCellSignal.titleLabel setAdjustsFontSizeToFitWidth:YES];
     [self.btnCellSignal setTitleColor:[self randomColor] forState:UIControlStateNormal];
+}
+- (IBAction)autoRefresh:(id)sender {
+    if (_timer) {
+        [self killTimer];
+    }else{
+        [self startTimer];
+    }
 }
 
 #pragma mark - Getting carrier name and signal streigth
@@ -87,6 +94,24 @@
 - (UIView *)statusBar {
     NSString *statusBarString = [NSString stringWithFormat:@"%@ar", @"_statusB"];
     return [[UIApplication sharedApplication] valueForKey:statusBarString];
+}
+
+#pragma mark -Config
+
+- (void)killTimer{
+    [self.timer invalidate];
+    self.timer = nil;
+}
+- (void)startTimer{
+    [self timer];
+}
+
+
+- (NSTimer *)timer{
+    if (!_timer) {
+        _timer = [NSTimer scheduledTimerWithTimeInterval:0.25 target:self selector:@selector(refreshSignal:) userInfo:nil repeats:YES];
+    }
+    return _timer;
 }
 
 
